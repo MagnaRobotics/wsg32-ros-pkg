@@ -104,25 +104,20 @@ int main( int argc, char **argv )
   spinner->start();
 
   ros::Rate rate(1.0 / gripper->getPeriod().toSec());
-  if( cmd_connect_tcp( ip.c_str(), port ) == 0 ) {
-    if(!gripper->init(ip, port)) {
-      ROS_ERROR("Unable to initialize gripper action server");
-    }
-    gripper->setRunning(true);
-    while (ros::ok())
-    {
-      ros::Time now = gripper->getTime();
-      ros::Duration dt = gripper->getPeriod();
-      gripper->read(now, dt);
-      cm.update(now, dt);
-      gripper->write(now, dt);
-      rate.sleep();
-      ros::spinOnce();
-    }
+  if(!gripper->init(ip, port)) {
+    ROS_ERROR("Unable to initialize gripper ros control node");
+  }
 
-  } else
+  gripper->setRunning(true);
+  while (ros::ok())
   {
-    ROS_ERROR("Unable to connect via TCP, please check the port and address used.");
+    ros::Time now = gripper->getTime();
+    ros::Duration dt = gripper->getPeriod();
+    gripper->read(now, dt);
+    cm.update(now, dt);
+    gripper->write(now, dt);
+    rate.sleep();
+    ros::spinOnce();
   }
   gripper->shutdown();
   

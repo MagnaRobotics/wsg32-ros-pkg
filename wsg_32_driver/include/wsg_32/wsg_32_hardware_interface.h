@@ -3,17 +3,7 @@
 #include <string.h>
 #include <assert.h>
 
-#include "common.h"
-#include "cmd.h"
-
 #include <ros/ros.h>
-#include "std_msgs/String.h"
-#include "std_srvs/Empty.h"
-
-#include "wsg_32_common/Status.h"
-#include "wsg_32_common/Move.h"
-#include "wsg_32_common/Conf.h"
-#include "wsg_32_common/Incr.h"
 
 #include <hardware_interface/joint_command_interface.h>
 #include <hardware_interface/joint_state_interface.h>

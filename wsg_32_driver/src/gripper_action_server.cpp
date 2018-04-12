@@ -99,7 +99,7 @@ bool GripperActionServer::moveSrv(wsg_32_common::Move::Request &req,
   }
   else if (req.width < 0.0 || req.width > MAX_OPENING)
   {
-    ROS_ERROR("Imposible to move to this position. (Width values: [0.0 - %f] m", MAX_OPENING);
+    ROS_ERROR("Impossible to move to this position. (Width values: [0.0 - %f] m", MAX_OPENING);
     res.error = 255;
     return true;
   }
