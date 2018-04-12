@@ -43,38 +43,10 @@ namespace wsg_gripper_driver
 {
 
 static const double MAX_OPENING = 0.07;
-static const double MAX_SPEED = 10.0;//0.42;
+static const double MAX_SPEED = 0.42;
 
-GripperActionServer::GripperActionServer(ros::NodeHandle &nh) : 
-  nh_(nh),
-  is_running_(false)
+GripperActionServer::GripperActionServer(ros::NodeHandle &nh): nh_(nh), is_running_(false)
 {
-
-  // connect and register the joint state interface
-  hardware_interface::JointStateHandle state_handle_gripper_left_joint("gripper_left_joint", &pos_[0], &vel_[0], &eff_[0]);
-  jnt_state_interface_.registerHandle(state_handle_gripper_left_joint);
-
-  hardware_interface::JointStateHandle state_handle_gripper_right_joint("gripper_right_joint", &pos_[1], &vel_[1], &eff_[1]);
-  jnt_state_interface_.registerHandle(state_handle_gripper_right_joint);
-
-  registerInterface(&jnt_state_interface_);
-
-  // connect and register the joint position interface
-  hardware_interface::JointHandle pos_handle_gripper_left_joint(jnt_state_interface_.getHandle("gripper_left_joint"), &cmd_[0]);
-  jnt_pos_interface_.registerHandle(pos_handle_gripper_left_joint);
-
-  hardware_interface::JointHandle pos_handle_gripper_right_joint(jnt_state_interface_.getHandle("gripper_right_joint"), &cmd_[1]);
-  jnt_pos_interface_.registerHandle(pos_handle_gripper_right_joint);
-
-  registerInterface(&jnt_pos_interface_);
-
-  last_cmd_ = 0.0;
-  new_cmd_ = 0.0;
-  max_effort_ = 5.0;
-
-  cmd_[0] = 0.0;
-  cmd_[1] = 0.0;
-
 }
 
 bool GripperActionServer::preemptActiveCallback()
@@ -87,27 +59,26 @@ bool GripperActionServer::preemptActiveCallback()
 
 bool GripperActionServer::initialize()
 {
-
   // Services
-  moveSS = nh_.advertiseService("/wsg_gripper_driver/move", &GripperActionServer::moveSrv, this);
-  graspSS = nh_.advertiseService("/wsg_gripper_driver/grasp", &GripperActionServer::graspSrv, this);
-  releaseSS = nh_.advertiseService("/wsg_gripper_driver/release", &GripperActionServer::releaseSrv, this);
-  homingSS = nh_.advertiseService("/wsg_gripper_driver/homing", &GripperActionServer::homingSrv, this);
-  stopSS = nh_.advertiseService("/wsg_gripper_driver/stop", &GripperActionServer::stopSrv, this);
-  ackSS = nh_.advertiseService("/wsg_gripper_driver/ack", &GripperActionServer::ackSrv, this);
-  incrementSS = nh_.advertiseService("/wsg_gripper_driver/move_incrementally", &GripperActionServer::incrementSrv, this);
-  setAccSS = nh_.advertiseService("/wsg_gripper_driver/set_acceleration", &GripperActionServer::setAccSrv, this);
-  setForceSS = nh_.advertiseService("/wsg_gripper_driver/set_force", &GripperActionServer::setForceSrv, this);
+  moveSS = nh_.advertiseService("wsg_gripper_driver/move", &GripperActionServer::moveSrv, this);
+  graspSS = nh_.advertiseService("wsg_gripper_driver/grasp", &GripperActionServer::graspSrv, this);
+  releaseSS = nh_.advertiseService("wsg_gripper_driver/release", &GripperActionServer::releaseSrv, this);
+  homingSS = nh_.advertiseService("wsg_gripper_driver/homing", &GripperActionServer::homingSrv, this);
+  stopSS = nh_.advertiseService("wsg_gripper_driver/stop", &GripperActionServer::stopSrv, this);
+  ackSS = nh_.advertiseService("wsg_gripper_driver/ack", &GripperActionServer::ackSrv, this);
+  incrementSS = nh_.advertiseService("wsg_gripper_driver/move_incrementally", &GripperActionServer::incrementSrv, this);
+  setAccSS = nh_.advertiseService("wsg_gripper_driver/set_acceleration", &GripperActionServer::setAccSrv, this);
+  setForceSS = nh_.advertiseService("wsg_gripper_driver/set_force", &GripperActionServer::setForceSrv, this);
 
   // ROS API: Action interface
   action_server_.reset(new ActionServer(nh_, "gripper_cmd",
-					boost::bind(&GripperActionServer::goalCB, this, _1),
-					boost::bind(&GripperActionServer::cancelCB, this, _1),
-					false));
+          boost::bind(&GripperActionServer::goalCB, this, _1),
+          boost::bind(&GripperActionServer::cancelCB, this, _1),
+          false));
   action_server_->start();
 
   // Publishers
-  state_pub_ = nh_.advertise<wsg_32_common::Status>("/wsg_gripper_driver/status", 1000);
+  state_pub_ = nh_.advertise<wsg_32_common::Status>("wsg_gripper_driver/status", 1000);
   joint_states_pub_ = nh_.advertise<sensor_msgs::JointState>("/joint_states", 1);
   ack_fault();
   homing();
@@ -128,7 +99,7 @@ bool GripperActionServer::moveSrv(wsg_32_common::Move::Request &req,
   }
   else if (req.width < 0.0 || req.width > MAX_OPENING)
   {
-    ROS_ERROR("Impossible to move to this position. (Width values: [0.0 - %f] m", MAX_OPENING);
+    ROS_ERROR("Imposible to move to this position. (Width values: [0.0 - %f] m", MAX_OPENING);
     res.error = 255;
     return true;
   }
@@ -145,7 +116,7 @@ bool GripperActionServer::moveSrv(wsg_32_common::Move::Request &req,
 }
 
 bool GripperActionServer::graspSrv(wsg_32_common::Move::Request &req,
-				   wsg_32_common::Move::Response &res)
+           wsg_32_common::Move::Response &res)
 {
   if ( (req.width >= 0.0 && req.width <= MAX_OPENING) && (req.speed > 0.0 && req.speed <= MAX_SPEED) )
   {
@@ -169,7 +140,7 @@ bool GripperActionServer::graspSrv(wsg_32_common::Move::Request &req,
 }
 
 bool GripperActionServer::incrementSrv(wsg_32_common::Incr::Request &req,
-				       wsg_32_common::Incr::Response &res)
+               wsg_32_common::Incr::Response &res)
 {
   if (req.direction == "open"){
 
@@ -178,13 +149,13 @@ bool GripperActionServer::incrementSrv(wsg_32_common::Incr::Request &req,
       float currentWidth = getOpening();
       float nextWidth = currentWidth + req.increment*1000;
       if ( (currentWidth < GRIPPER_MAX_OPEN) && nextWidth < GRIPPER_MAX_OPEN ){
-      	//grasp(nextWidth, 1);
-      	move(nextWidth,20, false, false);
-      	currentWidth = nextWidth;
+  //grasp(nextWidth, 1);
+  move(nextWidth,20, false, false);
+  currentWidth = nextWidth;
       }else if( nextWidth >= GRIPPER_MAX_OPEN){
-      	//grasp(GRIPPER_MAX_OPEN, 1);
-      	move(GRIPPER_MAX_OPEN,1, false, false);
-      	currentWidth = GRIPPER_MAX_OPEN;
+  //grasp(GRIPPER_MAX_OPEN, 1);
+  move(GRIPPER_MAX_OPEN,1, false, false);
+  currentWidth = GRIPPER_MAX_OPEN;
       }
     }else{
       ROS_DEBUG("Releasing object...");
@@ -199,20 +170,20 @@ bool GripperActionServer::incrementSrv(wsg_32_common::Incr::Request &req,
       float nextWidth = currentWidth - req.increment;
 
       if ( (currentWidth > GRIPPER_MIN_OPEN) && nextWidth > GRIPPER_MIN_OPEN ){
-      	//grasp(nextWidth, 1);
-      	move(nextWidth,20, false, false);
-      	currentWidth = nextWidth;
-      } else if( nextWidth <= GRIPPER_MIN_OPEN){
-      	//grasp(GRIPPER_MIN_OPEN, 1);
-      	move(GRIPPER_MIN_OPEN,1, false, false);
-      	currentWidth = GRIPPER_MIN_OPEN;
+  //grasp(nextWidth, 1);
+  move(nextWidth,20, false, false);
+  currentWidth = nextWidth;
+      }else if( nextWidth <= GRIPPER_MIN_OPEN){
+  //grasp(GRIPPER_MIN_OPEN, 1);
+  move(GRIPPER_MIN_OPEN,1, false, false);
+  currentWidth = GRIPPER_MIN_OPEN;
       }
     }
   }
 }
 
 bool GripperActionServer::releaseSrv(wsg_32_common::Move::Request &req,
-				     wsg_32_common::Move::Response &res)
+             wsg_32_common::Move::Response &res)
 {
   if ( (req.width >= 0.0 && req.width <= MAX_OPENING) && (req.speed > 0.0 && req.speed <= MAX_SPEED) ){
     ROS_DEBUG("Releasing to %f position at %f mm/s.", req.width, req.speed);
@@ -230,7 +201,7 @@ bool GripperActionServer::releaseSrv(wsg_32_common::Move::Request &req,
 }
 
 bool GripperActionServer::homingSrv(std_srvs::Empty::Request &req,
-				    std_srvs::Empty::Request &res)
+            std_srvs::Empty::Request &res)
 {
   ROS_DEBUG("Homing...");
   homing();
@@ -239,7 +210,7 @@ bool GripperActionServer::homingSrv(std_srvs::Empty::Request &req,
 }
 
 bool GripperActionServer::stopSrv(std_srvs::Empty::Request &req,
-				  std_srvs::Empty::Request &res)
+          std_srvs::Empty::Request &res)
 {
   ROS_WARN("Stop!");
   stop();
@@ -248,21 +219,21 @@ bool GripperActionServer::stopSrv(std_srvs::Empty::Request &req,
 }
 
 bool GripperActionServer::setAccSrv(wsg_32_common::Conf::Request &req,
-				    wsg_32_common::Conf::Response &res)
+            wsg_32_common::Conf::Response &res)
 {
   setAcceleration(req.val*1000);
   return true;
 }
 
 bool GripperActionServer::setForceSrv(wsg_32_common::Conf::Request &req,
-				      wsg_32_common::Conf::Response &res)
+              wsg_32_common::Conf::Response &res)
 {
   setGraspingForceLimit(req.val);
   return true;
 }
 
 bool GripperActionServer::ackSrv(std_srvs::Empty::Request &req,
-				 std_srvs::Empty::Request &res)
+         std_srvs::Empty::Request &res)
 {
   stop();
   ack_fault();
@@ -284,6 +255,8 @@ void GripperActionServer::goalCB(GoalHandle gh)
   preemptActiveCallback();
   gh.setAccepted();
   current_active_goal_.reset(new GoalHandle(gh));
+  wsg_32_common::Move::Request req;
+  wsg_32_common::Move::Response res;
   ROS_INFO("GOT A GOAL: EFFORT=%f POSITION=%f", gh.getGoal()->command.max_effort, gh.getGoal()->command.position);
 
   if (!nh_.hasParam("gripper_speed"))
@@ -291,12 +264,65 @@ void GripperActionServer::goalCB(GoalHandle gh)
   
   nh_.getParamCached("gripper_speed", gripper_speed_);
   
-  new_cmd_ = gh.getGoal()->command.position;
-  max_effort_ = gh.getGoal()->command.max_effort;
+  // if(gh.getGoal()->command.position > GRIPPER_RELEASE)
+  // {
+  //   req.width = gh.getGoal()->command.position-GRIPPER_RELEASE;
+  //   req.speed = gripper_speed_;
+  //   if(!releaseSrv(req,res))
+  //   {
+  //     ROS_ERROR("Could not service request");
+  //     if(gh.getGoalStatus().status == actionlib_msgs::GoalStatus::ACTIVE)
+  //     {
+  //       gh.setCanceled();
+  //     }
+  //   }
+  // }
 
-  cmd_[0] = new_cmd_/2.0;
-  cmd_[1] = new_cmd_/2.0;
+  // else if(gh.getGoal()->command.position < 0)
+  // {
+  //   req.width = -gh.getGoal()->command.position;
+  //   req.speed = gripper_speed_;
+  //   if(!moveSrv(req,res))
+  //   {
+  //     ROS_ERROR("Could not service request");
+  //     if(gh.getGoalStatus().status == actionlib_msgs::GoalStatus::ACTIVE)
+  //     {
+  //       gh.setCanceled();
+  //     }
+  //   }
+  // }
+  // else
+  {
+    req.width = gh.getGoal()->command.position;
+    req.speed = gripper_speed_;
+    //    if(!graspSrv(req,res))
+    if(!moveSrv(req,res))
+    {
+      ROS_ERROR("Could not service request");
+      if(gh.getGoalStatus().status == actionlib_msgs::GoalStatus::ACTIVE)
+      {
+        gh.setCanceled();
+      }
+    }
+  }
+  ROS_INFO_STREAM("In goal CB "<<res.error);
 
+  if(res.error != 255)
+  {
+    control_msgs::GripperCommandResult result;
+    result.effort = getGraspingForceLimit()/1000.0;
+    result.position = getOpening()/1000.0;
+    result.reached_goal = true;
+    result.stalled = false;
+    gh.setSucceeded(result);
+  }
+  else
+  {
+    if(gh.getGoalStatus().status == actionlib_msgs::GoalStatus::ACTIVE)
+    {
+      gh.setAborted();
+    }
+  }
 }
 
 void GripperActionServer::cancelCB(GoalHandle gh)
@@ -310,89 +336,6 @@ void GripperActionServer::cancelCB(GoalHandle gh)
   }
 }
 
-void GripperActionServer::read(const ros::Time& time, const ros::Duration& period) {
-
-  //Get state values
-  const char * aux;
-  aux = systemState();
-  float op = getOpening();
-  float acc = getAcceleration();
-  float force = getGraspingForceLimit();
-
-  std::stringstream ss;
-  ss << aux;
-
-  wsg_32_common::Status status_msg;
-  status_msg.status = ss.str();
-  status_msg.width = (int) op;
-  status_msg.acc = (int) acc;
-  status_msg.force = (int) force;
-
-  state_pub_.publish(status_msg);
-
-  double val = ((double) op)/1000.0;
-
-  pos_[0] = val/2.0;
-  pos_[1] = val/2.0;
-
-  vel_[0] = 0.0;
-  vel_[1] = 0.0;
-
-  eff_[0] = 0.0;
-  eff_[1] = 0.0;
-  
-}
-
-void GripperActionServer::write(const ros::Time& time, const ros::Duration& period) {
-
-  new_cmd_ = cmd_[0]+cmd_[1];
-
-  if(fabs(new_cmd_-last_cmd_) < 1e-5) {
-    return;
-  }
-  last_cmd_ = new_cmd_;
-
-  // ROS_INFO_STREAM("GripperActionServer::write() -- " << new_cmd_);
-
-  wsg_32_common::Move::Request req;
-  wsg_32_common::Move::Response res;
-   
-  nh_.getParamCached("gripper_speed", gripper_speed_);
- 
-  req.width = new_cmd_;
-  req.speed = gripper_speed_;
-
-  if(!moveSrv(req,res)) {
-    ROS_ERROR("Could not service request");
-    if(current_active_goal_) {
-      if(current_active_goal_->getGoalStatus().status == actionlib_msgs::GoalStatus::ACTIVE) {
-        current_active_goal_->setCanceled();
-      }
-    }
-  }
-
-  // ROS_INFO_STREAM("In goal CB "<<res.error);
-
-  if(res.error != 255) {
-    control_msgs::GripperCommandResult result;
-    result.effort = getGraspingForceLimit()/1000.0;
-    result.position = getOpening()/1000.0;
-    result.reached_goal = true;
-    result.stalled = false;
-    
-    if(current_active_goal_)
-      current_active_goal_->setSucceeded(result);
-  } else {
-    if(current_active_goal_) {
-      if(current_active_goal_->getGoalStatus().status == actionlib_msgs::GoalStatus::ACTIVE) {
-        current_active_goal_->setAborted();
-      }
-    }
-  }
-
-}
-
-
 void GripperActionServer::run()
 {
   ROS_DEBUG("TCP connection stablished");
@@ -405,13 +348,13 @@ void GripperActionServer::run()
 
   nh_.getParamCached("gripper_speed", gripper_speed_);
 
-  joint_state.name[1] = "gripper_left_joint";
-  joint_state.name[2] = "gripper_right_joint";
+  joint_state.name[0] = "gripper_left_joint";
+  joint_state.name[1] = "gripper_right_joint";
 
   //Loop waiting for orders and updating the state
   //Create the msg to send
   wsg_32_common::Status status_msg;
-  setRunning(true);
+  is_running_ = true;
   while( ros::ok() )
   {
     //Get state values
@@ -438,9 +381,6 @@ void GripperActionServer::run()
     joint_state.position[1] = val/2;
     joint_states_pub_.publish(joint_state);
 
-    pos_[0] = val/2.0;
-    pos_[1] = val/2.0;
-
     ros::spinOnce();
     loop_rate.sleep();
   }
@@ -453,7 +393,7 @@ void GripperActionServer::run()
 int main( int argc, char **argv )
 {
   ros::init(argc, argv, "wsg_gripper_driver");
-  ros::NodeHandle nh("/gripper_controller");
+  ros::NodeHandle nh("~");
 
   std::string ip;
   int port;
@@ -462,37 +402,20 @@ int main( int argc, char **argv )
   nh.param("ip", ip, std::string("192.168.1.53"));
   nh.param("port", port, 1000);
 
-  boost::shared_ptr<wsg_gripper_driver::GripperActionServer> gripper;
-  boost::shared_ptr<ros::AsyncSpinner> spinner;
+  wsg_gripper_driver::GripperActionServer gs(nh);
 
-  gripper = boost::make_shared<wsg_gripper_driver::GripperActionServer>(nh);
-  controller_manager::ControllerManager cm(&(*(gripper.get())), nh);
-
-  spinner = boost::make_shared<ros::AsyncSpinner>(1);
-  spinner->start();
-
-  ros::Rate rate(1.0 / gripper->getPeriod().toSec());
-  if( cmd_connect_tcp( ip.c_str(), port ) == 0 ) {
-    if(!gripper->initialize()) {
+  // Connect to device using TCP
+  if( cmd_connect_tcp( ip.c_str(), port ) == 0 )
+  {
+    if(gs.initialize())
+      gs.run();
+    else
       ROS_ERROR("Unable to initialize gripper action server");
-    }
-    gripper->setRunning(true);
-    while (ros::ok())
-    {
-      ros::Time now = gripper->getTime();
-      ros::Duration dt = gripper->getPeriod();
-      gripper->read(now, dt);
-      cm.update(now, dt);
-      gripper->write(now, dt);
-      rate.sleep();
-      ros::spinOnce();
-    }
-
-  } else
+  }
+  else
   {
     ROS_ERROR("Unable to connect via TCP, please check the port and address used.");
   }
-  gripper->setRunning(false);
 
   cmd_disconnect();
   ros::shutdown();

@@ -56,12 +56,6 @@
 #include "wsg_32_common/Conf.h"
 #include "wsg_32_common/Incr.h"
 
-#include <hardware_interface/joint_command_interface.h>
-#include <hardware_interface/joint_state_interface.h>
-#include <hardware_interface/robot_hw.h>
-
-#include "controller_manager/controller_manager.h"
-
 // ROS messages
 #include <control_msgs/GripperCommandAction.h>
 // actionlib
@@ -69,6 +63,7 @@
 
 namespace wsg_gripper_driver
 {
+
 typedef actionlib::ActionServer<control_msgs::GripperCommandAction> ActionServer;
 typedef boost::shared_ptr<ActionServer> ActionServerPtr;
 typedef ActionServer::GoalHandle GoalHandle;
@@ -88,22 +83,8 @@ typedef ActionServer::GoalHandle GoalHandle;
 // hack to get current actionserver to accept 3 command inputs
 #define GRIPPER_RELEASE 1000000.0
 
-class GripperActionServer : public hardware_interface::RobotHW
+class GripperActionServer
 {
-
-
-private:
-
-	hardware_interface::JointStateInterface jnt_state_interface_;
-	hardware_interface::PositionJointInterface jnt_pos_interface_;
-
-	double cmd_[2];
-	double pos_[2];
-	double vel_[2];
-	double eff_[2];
-
-	double new_cmd_, last_cmd_;
-	double max_effort_;
 
 public:
 
@@ -165,13 +146,6 @@ bool objectGraspped;
 	     std_srvs::Empty::Request &res);
 
  bool preemptActiveCallback();
-
- void setRunning(bool b) { is_running_ = b; }
- void read(const ros::Time& time, const ros::Duration& period);
- void write(const ros::Time& time, const ros::Duration& period);
-
- ros::Time getTime() const { return ros::Time::now(); }
- ros::Duration getPeriod() const { return ros::Duration(1.0/30.0); }
 
  // Services
  ros::ServiceServer moveSS, graspSS, releaseSS, homingSS, stopSS, ackSS, incrementSS, setAccSS, setForceSS;
