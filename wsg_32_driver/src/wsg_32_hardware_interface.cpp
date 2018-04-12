@@ -10,7 +10,8 @@ Wsg32HardwareInterface::Wsg32HardwareInterface(ros::NodeHandle &nh) :
   is_running_(false),
   rate_(30.0)
 {
-  cmd_[0] = cmd_[1] = 0.0;
+  cmd_[0] = 0.0;
+  cmd_[1] = 0.0;
 }
 
 bool Wsg32HardwareInterface::init(std::string ip, int port) {
@@ -33,6 +34,9 @@ bool Wsg32HardwareInterface::init(std::string ip, int port) {
 
   registerInterface(&jnt_pos_interface_);
 
+  cmd_[0] = 0.0;
+  cmd_[1] = 0.0;
+  
   return gripper_.init(ip,port);
 
 }
@@ -65,8 +69,7 @@ void Wsg32HardwareInterface::read(const ros::Time& time, const ros::Duration& pe
 void Wsg32HardwareInterface::write(const ros::Time& time, const ros::Duration& period) {
 
   double gripper_cmd = cmd_[0]+cmd_[1];
-  nh_.getParamCached("gripper_speed", gripper_speed_);
-
+  nh_.getParamCached("/gripper_speed", gripper_speed_);
   // ROS_INFO_STREAM("Wsg32HardwareInterface::write() -- " << gripper_cmd);
   if(!gripper_.setPosition(gripper_cmd,gripper_speed_)) {
     ROS_ERROR_STREAM("Wsg32HardwareInterface::write() -- could not set gripper position to be: " << gripper_cmd << ", with speed: " << gripper_speed_);

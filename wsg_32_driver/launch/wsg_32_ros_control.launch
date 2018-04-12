@@ -6,7 +6,6 @@
 	<node name="gripper_ros_control"  pkg="wsg_32_driver" type="gripper_ros_control" output="screen">
         <param name="ip" type="string" value="192.168.1.53"/>
         <param name="port" type="int" value="1000"/>
-        <param name="gripper_speed" type="double" value="0.5"/>
  	 </node>
 
   	<node name="gripper_joint_relay"  pkg="topic_tools" type="relay" args="/gripper_controller/joint_states /joint_states"/>
@@ -14,6 +13,8 @@
     <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
           args="joint_state_controller trajectory_controller"/>
   </group>
+
+  <param name="/gripper_speed" type="double" value="1.0"/>
 
 </launch>
 
