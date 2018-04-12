@@ -104,7 +104,7 @@ bool Wsg32ROSInterface::setPosition(double val, double speed)  {
 bool Wsg32ROSInterface::moveSrv(wsg_32_common::Move::Request &req, wsg_32_common::Move::Response &res) {
 
   if ( (req.width >= 0.0 && req.width <= MAX_OPENING) && (req.speed > 0.0 && req.speed <= MAX_SPEED) ) {
-    ROS_INFO("Wsg32ROSInterface::moveSrv() -- Moving to %f position at %f mm/s.", req.width, req.speed);
+    //ROS_INFO("Wsg32ROSInterface::moveSrv() -- Moving to %f position at %f mm/s.", req.width, req.speed);
     res.error = move(req.width * 1000, req.speed * 1000, false, false);
   } else if (req.width < 0.0 || req.width > MAX_OPENING) {
     ROS_ERROR("Wsg32ROSInterface::moveSrv() -- Impossible to move to this position. (Width values: [0.0 - %f] m, requesting %f", MAX_OPENING, req.width);
