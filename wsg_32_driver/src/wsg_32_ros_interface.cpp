@@ -104,15 +104,15 @@ bool Wsg32ROSInterface::setPosition(double val, double speed)  {
 bool Wsg32ROSInterface::moveSrv(wsg_32_common::Move::Request &req, wsg_32_common::Move::Response &res) {
 
   if ( (req.width >= 0.0 && req.width <= MAX_OPENING) && (req.speed > 0.0 && req.speed <= MAX_SPEED) ) {
-    ROS_INFO("Moving to %f position at %f mm/s.", req.width, req.speed);
+    ROS_INFO("Wsg32ROSInterface::moveSrv() -- Moving to %f position at %f mm/s.", req.width, req.speed);
     res.error = move(req.width * 1000, req.speed * 1000, false, false);
   } else if (req.width < 0.0 || req.width > MAX_OPENING) {
-    ROS_ERROR("Impossible to move to this position. (Width values: [0.0 - %f] m", MAX_OPENING);
+    ROS_ERROR("Wsg32ROSInterface::moveSrv() -- Impossible to move to this position. (Width values: [0.0 - %f] m", MAX_OPENING);
     res.error = 255;
     return true;
   }
   else {
-    ROS_WARN("Speed values are outside the gripper's physical limits ([0.0001 - %f m/s])  Using clamped values.", MAX_SPEED);
+    ROS_WARN("Wsg32ROSInterface::moveSrv() -- Speed values are outside the gripper's physical limits ([0.0001 - %f m/s])  Using clamped values.", MAX_SPEED);
     res.error = move(req.width * 1000, req.speed * 1000, false, false);
   }
   if (res.error == 255) {
@@ -130,11 +130,11 @@ bool Wsg32ROSInterface::graspSrv(wsg_32_common::Move::Request &req, wsg_32_commo
     ROS_DEBUG("Grasping object of width %f at %f mm/s.", req.width, req.speed);
     res.error = grasp(req.width*1000, req.speed*1000);
   } else if (req.width < 0.0 || req.width > MAX_OPENING) {
-    ROS_ERROR("Impossible to move to position %lf. (Width values: [0.0 - %f] ", req.width, MAX_OPENING);
+    ROS_ERROR("Wsg32ROSInterface::graspSrv() -- Impossible to move to position %lf. (Width values: [0.0 - %f] ", req.width, MAX_OPENING);
     res.error = 255;
     return false;
   } else {
-    ROS_WARN("Speed or position values are outside the gripper's physical limits (Position: [0.0 - 110.0] / Speed: [0.1 - %f])  Using clamped values.", MAX_SPEED);
+    ROS_WARN("Wsg32ROSInterface::graspSrv() -- Speed or position values are outside the gripper's physical limits (Position: [0.0 - 110.0] / Speed: [0.1 - %f])  Using clamped values.", MAX_SPEED);
     res.error = grasp(req.width, req.speed);
   }
 
@@ -195,11 +195,11 @@ bool Wsg32ROSInterface::releaseSrv(wsg_32_common::Move::Request &req, wsg_32_com
     ROS_DEBUG("Releasing to %f position at %f mm/s.", req.width, req.speed);
     res.error = release(req.width*1000, req.speed*1000);
   }else if (req.width < 0.0 || req.width > MAX_OPENING){
-    ROS_ERROR("Imposible to move to this position. (Width values: [0.0 - %f] ", MAX_OPENING);
+    ROS_ERROR("Wsg32ROSInterface::releaseSrv() -- Imposible to move to this position. (Width values: [0.0 - %f] ", MAX_OPENING);
     res.error = 255;
     return false;
   }else{
-    ROS_WARN("Speed or position values are outside the gripper's physical limits (Position: [0.0 - %f] / Speed: [0.0001 - %f])  Using clamped values.", MAX_OPENING, MAX_SPEED);
+    ROS_WARN("Wsg32ROSInterface::releaseSrv() -- Speed or position values are outside the gripper's physical limits (Position: [0.0 - %f] / Speed: [0.0001 - %f])  Using clamped values.", MAX_OPENING, MAX_SPEED);
     res.error = release(req.width*1000, req.speed*1000);
   }
   ROS_DEBUG("Object released correctly.");
@@ -217,9 +217,9 @@ bool Wsg32ROSInterface::homingSrv(std_srvs::Empty::Request &req, std_srvs::Empty
 
 
 bool Wsg32ROSInterface::stopSrv(std_srvs::Empty::Request &req, std_srvs::Empty::Request &res) {
-  ROS_WARN("Stop!");
+  ROS_WARN("Wsg32ROSInterface::stopSrv() -- Stop!");
   stop();
-  ROS_WARN("Stopped.");
+  ROS_WARN("Wsg32ROSInterface::stopSrv() -- Stopped.");
   return true;
 }
 
