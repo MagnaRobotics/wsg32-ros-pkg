@@ -10,7 +10,7 @@ Wsg32HardwareInterface::Wsg32HardwareInterface(ros::NodeHandle &nh) :
   is_running_(false),
   rate_(30.0)
 {
-
+  cmd_[0] = cmd_[1] = 0.0;
 }
 
 bool Wsg32HardwareInterface::init(std::string ip, int port) {
