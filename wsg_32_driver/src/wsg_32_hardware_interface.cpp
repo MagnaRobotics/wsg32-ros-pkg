@@ -69,7 +69,7 @@ void Wsg32HardwareInterface::write(const ros::Time& time, const ros::Duration& p
 
   // ROS_INFO_STREAM("Wsg32HardwareInterface::write() -- " << gripper_cmd);
   if(!gripper_.setPosition(gripper_cmd,gripper_speed_)) {
-    ROS_ERROR_STREAM("Wsg32HardwareInterface::write() -- could not service request");
+    ROS_ERROR_STREAM("Wsg32HardwareInterface::write() -- could not set gripper position to be: " << gripper_cmd << ", with speed: " << gripper_speed_);
   }
   
 }
