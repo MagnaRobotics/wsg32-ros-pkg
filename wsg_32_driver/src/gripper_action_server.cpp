@@ -43,7 +43,7 @@ namespace wsg_gripper_driver
 {
 
 static const double MAX_OPENING = 0.07;
-static const double MAX_SPEED = 10.0;//0.42;
+static const double MAX_SPEED = 0.42;
 
 GripperActionServer::GripperActionServer(ros::NodeHandle &nh) : 
   nh_(nh),
