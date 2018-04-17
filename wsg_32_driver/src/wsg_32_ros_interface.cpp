@@ -25,20 +25,27 @@ Wsg32ROSInterface::Wsg32ROSInterface(ros::NodeHandle &nh) :
   // Publishers
   state_pub_ = nh_.advertise<wsg_32_common::Status>("/wsg_gripper_driver/status", 10);
 
-  // home the gripper
-  ack_fault();
-  homing();
-
-  ROS_INFO_STREAM("Wsg32ROSInterface() -- using force: " << getGraspingForceLimit());
-  setGraspingForceLimit(15);
-
-  ROS_INFO("Wsg32ROSInterface() -- ready");
-
 }
 
 
 bool Wsg32ROSInterface::init(std::string ip, int port) {
-  return (cmd_connect_tcp( ip.c_str(), port ) == 0);
+
+  if(!(cmd_connect_tcp( ip.c_str(), port ) == 0)) {
+    ROS_ERROR_STREAM("Wsg32ROSInterface::init() -- failed to connect to TCP port: " << port << " on IP: " << ip);
+    return false;
+  }
+  ROS_INFO_STREAM("Wsg32ROSInterface::init() -- connected to TCP port: " << port << " on IP: " << ip);
+
+  // home the gripper
+  ack_fault();
+  homing();
+
+  ROS_INFO_STREAM("Wsg32ROSInterface::init() -- using force: " << getGraspingForceLimit());
+  setGraspingForceLimit(15);
+
+  ROS_INFO("Wsg32ROSInterface::init() -- ready");
+
+  return true;
 }
 
 
