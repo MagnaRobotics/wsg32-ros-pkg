@@ -1,14 +1,16 @@
 <?xml version="1.0"?>
 <launch>
 
- <group ns="gripper_controller">
+  <rosparam file="$(find wsg_32_driver)/config/wsg32_controllers.yaml" command="load"/>
 
-	<node name="gripper_ros_control"  pkg="wsg_32_driver" type="gripper_ros_control" output="screen">
-        <param name="ip" type="string" value="192.168.1.53"/>
-        <param name="port" type="int" value="1000"/>
- 	 </node>
-
-  	<node name="gripper_joint_relay"  pkg="topic_tools" type="relay" args="/gripper_controller/joint_states /joint_states"/>
+  <group ns="gripper_controller">
+    <param name="robot_description"  command="$(find xacro)/xacro --inorder $(find wsg_32_gripper_description)/robots/gripper_standalone.urdf" />
+    
+    <node name="gripper_ros_control"  pkg="wsg_32_driver" type="gripper_ros_control" output="screen">
+      <param name="ip" type="string" value="192.168.1.53"/>
+      <param name="port" type="int" value="1000"/>
+      <remap to="/joint_states" from="/gripper_controller/joint_states"/>
+    </node>
 
     <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
           args="joint_state_controller trajectory_controller"/>
