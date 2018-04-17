@@ -5,7 +5,7 @@ namespace wsg_gripper_driver
 
 static const double MIN_OPENING = -0.01;
 static const double MAX_OPENING = 0.07;
-static const double MAX_SPEED = 10.0;//0.42;
+static const double MAX_SPEED = 0.42;
 
 Wsg32ROSInterface::Wsg32ROSInterface(ros::NodeHandle &nh) : 
   nh_(nh)
@@ -102,7 +102,10 @@ bool Wsg32ROSInterface::setPosition(double val, double speed)  {
   wsg_32_common::Move::Response res;
 
   req.width = val;
-  req.speed = speed;
+  if (speed <= 0)
+    req.speed = MAX_SPEED;
+  else
+    req.speed = speed;
 
 
   if(!moveSrv(req,res)) {

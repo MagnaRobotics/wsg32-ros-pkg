@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <launch>
+  <arg name="tl" default="false"/>
 
   <rosparam file="$(find wsg_32_driver)/config/wsg32_controllers.yaml" command="load"/>
 
@@ -7,7 +8,8 @@
     <param name="robot_description"  command="$(find xacro)/xacro --inorder $(find wsg_32_gripper_description)/robots/gripper_standalone.urdf" />
     
     <node name="gripper_ros_control"  pkg="wsg_32_driver" type="gripper_ros_control" output="screen">
-      <param name="ip" type="string" value="192.168.1.53"/>
+      <param unless="$(arg tl)" name="ip" type="string" value="192.168.1.51"/>
+      <param if="$(arg tl)" name="ip" type="string" value="192.168.1.53"/>
       <param name="port" type="int" value="1000"/>
       <remap to="/joint_states" from="/gripper_controller/joint_states"/>
     </node>
@@ -15,8 +17,6 @@
     <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
           args="joint_state_controller trajectory_controller"/>
   </group>
-
-  <param name="/gripper_speed" type="double" value="1.0"/>
 
 </launch>
 

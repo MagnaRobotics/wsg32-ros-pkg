@@ -69,10 +69,9 @@ void Wsg32HardwareInterface::read(const ros::Time& time, const ros::Duration& pe
 void Wsg32HardwareInterface::write(const ros::Time& time, const ros::Duration& period) {
 
   double gripper_cmd = cmd_[0]+cmd_[1];
-  nh_.getParamCached("/gripper_speed", gripper_speed_);
   // ROS_INFO_STREAM("Wsg32HardwareInterface::write() -- " << gripper_cmd);
-  if(!gripper_.setPosition(gripper_cmd,gripper_speed_)) {
-    ROS_ERROR_STREAM("Wsg32HardwareInterface::write() -- could not set gripper position to be: " << gripper_cmd << ", with speed: " << gripper_speed_);
+  if(!gripper_.setPosition(gripper_cmd,-1)) {
+    ROS_ERROR_STREAM("Wsg32HardwareInterface::write() -- could not set gripper position to be: " << gripper_cmd);
   }
   
 }
