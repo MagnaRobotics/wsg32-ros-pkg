@@ -72,9 +72,9 @@ bool GripperActionServer::initialize()
 
   // ROS API: Action interface
   action_server_.reset(new ActionServer(nh_, "gripper_cmd",
-					boost::bind(&GripperActionServer::goalCB, this, _1),
-					boost::bind(&GripperActionServer::cancelCB, this, _1),
-					false));
+          boost::bind(&GripperActionServer::goalCB, this, _1),
+          boost::bind(&GripperActionServer::cancelCB, this, _1),
+          false));
   action_server_->start();
 
   // Publishers
@@ -99,7 +99,7 @@ bool GripperActionServer::moveSrv(wsg_32_common::Move::Request &req,
   }
   else if (req.width < 0.0 || req.width > MAX_OPENING)
   {
-    ROS_ERROR("Imposible to move to this position. (Width values: [0.0 - %f] m", MAX_OPENING);
+    ROS_ERROR("Impossible to move to this position. (Width values: [0.0 - %f] m", MAX_OPENING);
     res.error = 255;
     return true;
   }
@@ -116,7 +116,7 @@ bool GripperActionServer::moveSrv(wsg_32_common::Move::Request &req,
 }
 
 bool GripperActionServer::graspSrv(wsg_32_common::Move::Request &req,
-				   wsg_32_common::Move::Response &res)
+           wsg_32_common::Move::Response &res)
 {
   if ( (req.width >= 0.0 && req.width <= MAX_OPENING) && (req.speed > 0.0 && req.speed <= MAX_SPEED) )
   {
@@ -140,7 +140,7 @@ bool GripperActionServer::graspSrv(wsg_32_common::Move::Request &req,
 }
 
 bool GripperActionServer::incrementSrv(wsg_32_common::Incr::Request &req,
-				       wsg_32_common::Incr::Response &res)
+               wsg_32_common::Incr::Response &res)
 {
   if (req.direction == "open"){
 
@@ -149,13 +149,13 @@ bool GripperActionServer::incrementSrv(wsg_32_common::Incr::Request &req,
       float currentWidth = getOpening();
       float nextWidth = currentWidth + req.increment*1000;
       if ( (currentWidth < GRIPPER_MAX_OPEN) && nextWidth < GRIPPER_MAX_OPEN ){
-	//grasp(nextWidth, 1);
-	move(nextWidth,20, false, false);
-	currentWidth = nextWidth;
+  //grasp(nextWidth, 1);
+  move(nextWidth,20, false, false);
+  currentWidth = nextWidth;
       }else if( nextWidth >= GRIPPER_MAX_OPEN){
-	//grasp(GRIPPER_MAX_OPEN, 1);
-	move(GRIPPER_MAX_OPEN,1, false, false);
-	currentWidth = GRIPPER_MAX_OPEN;
+  //grasp(GRIPPER_MAX_OPEN, 1);
+  move(GRIPPER_MAX_OPEN,1, false, false);
+  currentWidth = GRIPPER_MAX_OPEN;
       }
     }else{
       ROS_DEBUG("Releasing object...");
@@ -170,20 +170,20 @@ bool GripperActionServer::incrementSrv(wsg_32_common::Incr::Request &req,
       float nextWidth = currentWidth - req.increment;
 
       if ( (currentWidth > GRIPPER_MIN_OPEN) && nextWidth > GRIPPER_MIN_OPEN ){
-	//grasp(nextWidth, 1);
-	move(nextWidth,20, false, false);
-	currentWidth = nextWidth;
+  //grasp(nextWidth, 1);
+  move(nextWidth,20, false, false);
+  currentWidth = nextWidth;
       }else if( nextWidth <= GRIPPER_MIN_OPEN){
-	//grasp(GRIPPER_MIN_OPEN, 1);
-	move(GRIPPER_MIN_OPEN,1, false, false);
-	currentWidth = GRIPPER_MIN_OPEN;
+  //grasp(GRIPPER_MIN_OPEN, 1);
+  move(GRIPPER_MIN_OPEN,1, false, false);
+  currentWidth = GRIPPER_MIN_OPEN;
       }
     }
   }
 }
 
 bool GripperActionServer::releaseSrv(wsg_32_common::Move::Request &req,
-				     wsg_32_common::Move::Response &res)
+             wsg_32_common::Move::Response &res)
 {
   if ( (req.width >= 0.0 && req.width <= MAX_OPENING) && (req.speed > 0.0 && req.speed <= MAX_SPEED) ){
     ROS_DEBUG("Releasing to %f position at %f mm/s.", req.width, req.speed);
@@ -201,7 +201,7 @@ bool GripperActionServer::releaseSrv(wsg_32_common::Move::Request &req,
 }
 
 bool GripperActionServer::homingSrv(std_srvs::Empty::Request &req,
-				    std_srvs::Empty::Request &res)
+            std_srvs::Empty::Request &res)
 {
   ROS_DEBUG("Homing...");
   homing();
@@ -210,7 +210,7 @@ bool GripperActionServer::homingSrv(std_srvs::Empty::Request &req,
 }
 
 bool GripperActionServer::stopSrv(std_srvs::Empty::Request &req,
-				  std_srvs::Empty::Request &res)
+          std_srvs::Empty::Request &res)
 {
   ROS_WARN("Stop!");
   stop();
@@ -219,21 +219,21 @@ bool GripperActionServer::stopSrv(std_srvs::Empty::Request &req,
 }
 
 bool GripperActionServer::setAccSrv(wsg_32_common::Conf::Request &req,
-				    wsg_32_common::Conf::Response &res)
+            wsg_32_common::Conf::Response &res)
 {
   setAcceleration(req.val*1000);
   return true;
 }
 
 bool GripperActionServer::setForceSrv(wsg_32_common::Conf::Request &req,
-				      wsg_32_common::Conf::Response &res)
+              wsg_32_common::Conf::Response &res)
 {
   setGraspingForceLimit(req.val);
   return true;
 }
 
 bool GripperActionServer::ackSrv(std_srvs::Empty::Request &req,
-				 std_srvs::Empty::Request &res)
+         std_srvs::Empty::Request &res)
 {
   stop();
   ack_fault();
