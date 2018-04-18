@@ -93,7 +93,7 @@ int main( int argc, char **argv )
   int port;
 
   ROS_DEBUG("WSG 32 - ROS NODE");
-  nh.param("ip", ip, std::string("192.168.1.53"));
+  nh.param("ip", ip, std::string("192.168.1.51"));
   nh.param("port", port, 1000);
 
   boost::shared_ptr<wsg_gripper_driver::Wsg32HardwareInterface> gripper;
