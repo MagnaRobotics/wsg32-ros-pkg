@@ -4,7 +4,7 @@
  <group ns="gripper_controller">
 
 	<node name="gripper_server"  pkg="wsg_32_driver" type="gripper_server" output="screen">
-        <param name="ip" type="string" value="192.168.1.53"/>
+        <param name="ip" type="string" value="192.168.1.52"/>
         <param name="port" type="int" value="1000"/>
         <param name="gripper_speed" type="double" value="0.5"/>
  	 </node>

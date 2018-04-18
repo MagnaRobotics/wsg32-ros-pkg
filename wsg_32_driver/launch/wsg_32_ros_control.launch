@@ -6,11 +6,12 @@
 
   <group ns="gripper_controller">
     <param name="robot_description"  command="$(find xacro)/xacro --inorder $(find wsg_32_gripper_description)/robots/gripper_standalone.urdf" />
+    <param unless="$(arg tl)" name="ip" type="string" value="192.168.1.51"/>
+    <param if="$(arg tl)" name="ip" type="string" value="192.168.1.52"/>
+    <param name="port" type="int" value="1000"/>
+    
     
     <node name="gripper_ros_control"  pkg="wsg_32_driver" type="gripper_ros_control" output="screen">
-      <param unless="$(arg tl)" name="ip" type="string" value="192.168.1.51"/>
-      <param if="$(arg tl)" name="ip" type="string" value="192.168.1.53"/>
-      <param name="port" type="int" value="1000"/>
       <remap to="/joint_states" from="/gripper_controller/joint_states"/>
     </node>
 
