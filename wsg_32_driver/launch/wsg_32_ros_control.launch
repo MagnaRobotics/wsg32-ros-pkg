@@ -1,13 +1,17 @@
 <?xml version="1.0"?>
 <launch>
   <arg name="tl" default="false"/>
+  <arg name="gripper_ip" default="192.168.1.1" />
 
   <rosparam file="$(find wsg_32_driver)/config/wsg32_controllers.yaml" command="load"/>
 
   <group ns="gripper_controller">
     <param name="robot_description"  command="$(find xacro)/xacro --inorder $(find wsg_32_gripper_description)/robots/gripper_standalone.urdf" />
+    <param name="ip" type="string" value="$(arg gripper_ip)"/>
+    <!--
     <param unless="$(arg tl)" name="ip" type="string" value="192.168.1.51"/>
     <param if="$(arg tl)" name="ip" type="string" value="192.168.1.52"/>
+     -->
     <param name="port" type="int" value="1000"/>
     
     
