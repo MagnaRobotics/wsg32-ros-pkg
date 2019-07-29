@@ -202,6 +202,7 @@ bool Wsg32ROSInterface::incrementSrv(wsg_32_common::Incr::Request &req, wsg_32_c
       }
     }
   }
+  return true;
 }
 
 
