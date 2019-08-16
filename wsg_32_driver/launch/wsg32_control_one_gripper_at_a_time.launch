@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="gripper_ip" default="192.168.1.1" />
+  <arg name="namespace" defualt="arm_1">
+  <arg name="gripper_urdf" default="triad_arm_1_only.xacro" />
+
+
+  <group ns="$(arg namespace)_controller">
+
+    <param name="robot_description"  command="$(find xacro)/xacro --inorder $(find wsg_32_gripper_description)/robots/gripper_standalone.urdf" />
+
+    <param name="port" type="int" value="1000"/>
+        
+    <node name="gripper_ros_control"  pkg="wsg_32_driver" type="gripper_ros_control" output="screen">
+      <param name="ip" type="string" value="$(arg gripper_ip)"/>
+      <remap to="/joint_states" from="/$(arg namespace)_controller/joint_states"/>
+    </node>
+
+    <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
+          args="joint_state_controller trajectory_controller"/>
+  </group>
+
+</launch>

@@ -1,0 +1,35 @@
+gripper_1_controller:
+
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 125  
+
+  trajectory_controller:
+    type: "position_controllers/JointTrajectoryController"
+    joints:
+      - gripper_1_left_joint      
+      - gripper_1_right_joint      
+
+gripper_2_controller:
+
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 125  
+
+  trajectory_controller:
+    type: "position_controllers/JointTrajectoryController"
+    joints:
+      - gripper_2_left_joint      
+      - gripper_2_right_joint     
+
+gripper_3_controller:
+
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 125  
+
+  trajectory_controller:
+    type: "position_controllers/JointTrajectoryController"
+    joints:
+      - gripper_3_left_joint      
+      - gripper_3_right_joint     
