@@ -14,7 +14,7 @@
   <!-- ********************* -->
   <!-- ***** Gripper 1 ***** -->
   <!-- ********************* -->
-  <include file="$(find denso_ros_control)/launch/wsg32_control_one_gripper_at_a_time.launch">
+  <include file="$(find wsg_32_driver)/launch/wsg32_control_one_gripper_at_a_time.launch">
     <arg name="namespace" value="gripper_1"/>
     <arg name="gripper_ip" value="$(arg gripper_ip_1)"/>
     <arg name="gripper_port" value="$(arg gripper_port_1)"/>
@@ -23,7 +23,7 @@
   <!-- ********************* -->
   <!-- ***** Gripper 2 ***** -->
   <!-- ********************* -->
-  <include file="$(find denso_ros_control)/launch/wsg32_control_one_gripper_at_a_time.launch">
+  <include file="$(find wsg_32_driver)/launch/wsg32_control_one_gripper_at_a_time.launch">
     <arg name="namespace" value="gripper_2"/>
     <arg name="gripper_ip" value="$(arg gripper_ip_2)"/>
     <arg name="gripper_port" value="$(arg gripper_port_2)"/>
@@ -32,7 +32,7 @@
   <!-- ********************* -->
   <!-- ***** Gripper 3 ***** -->
   <!-- ********************* -->
-  <include file="$(find denso_ros_control)/launch/wsg32_control_one_gripper_at_a_time.launch">
+  <include file="$(find wsg_32_driver)/launch/wsg32_control_one_gripper_at_a_time.launch">
     <arg name="namespace" value="gripper_3"/>
     <arg name="gripper_ip" value="$(arg gripper_ip_3)"/>
     <arg name="gripper_port" value="$(arg gripper_port_3)"/>
