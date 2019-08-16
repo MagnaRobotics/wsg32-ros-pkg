@@ -12,18 +12,18 @@ Wsg32ROSInterface::Wsg32ROSInterface(ros::NodeHandle &nh) :
 {
 
   // Services
-  moveSS = nh_.advertiseService("/wsg_gripper_driver/move", &Wsg32ROSInterface::moveSrv, this);
-  graspSS = nh_.advertiseService("/wsg_gripper_driver/grasp", &Wsg32ROSInterface::graspSrv, this);
-  releaseSS = nh_.advertiseService("/wsg_gripper_driver/release", &Wsg32ROSInterface::releaseSrv, this);
-  homingSS = nh_.advertiseService("/wsg_gripper_driver/homing", &Wsg32ROSInterface::homingSrv, this);
-  stopSS = nh_.advertiseService("/wsg_gripper_driver/stop", &Wsg32ROSInterface::stopSrv, this);
-  ackSS = nh_.advertiseService("/wsg_gripper_driver/ack", &Wsg32ROSInterface::ackSrv, this);
-  incrementSS = nh_.advertiseService("/wsg_gripper_driver/move_incrementally", &Wsg32ROSInterface::incrementSrv, this);
-  setAccSS = nh_.advertiseService("/wsg_gripper_driver/set_acceleration", &Wsg32ROSInterface::setAccSrv, this);
-  setForceSS = nh_.advertiseService("/wsg_gripper_driver/set_force", &Wsg32ROSInterface::setForceSrv, this);
+  moveSS = nh_.advertiseService("wsg_gripper_driver/move", &Wsg32ROSInterface::moveSrv, this);
+  graspSS = nh_.advertiseService("wsg_gripper_driver/grasp", &Wsg32ROSInterface::graspSrv, this);
+  releaseSS = nh_.advertiseService("wsg_gripper_driver/release", &Wsg32ROSInterface::releaseSrv, this);
+  homingSS = nh_.advertiseService("wsg_gripper_driver/homing", &Wsg32ROSInterface::homingSrv, this);
+  stopSS = nh_.advertiseService("wsg_gripper_driver/stop", &Wsg32ROSInterface::stopSrv, this);
+  ackSS = nh_.advertiseService("wsg_gripper_driver/ack", &Wsg32ROSInterface::ackSrv, this);
+  incrementSS = nh_.advertiseService("wsg_gripper_driver/move_incrementally", &Wsg32ROSInterface::incrementSrv, this);
+  setAccSS = nh_.advertiseService("wsg_gripper_driver/set_acceleration", &Wsg32ROSInterface::setAccSrv, this);
+  setForceSS = nh_.advertiseService("wsg_gripper_driver/set_force", &Wsg32ROSInterface::setForceSrv, this);
 
   // Publishers
-  state_pub_ = nh_.advertise<wsg_32_common::Status>("/wsg_gripper_driver/status", 10);
+  state_pub_ = nh_.advertise<wsg_32_common::Status>("wsg_gripper_driver/status", 10);
 
 }
 

@@ -41,7 +41,7 @@ public:
   double rate_;
  
   // helper functions
-  bool init(std::string ip, int port);
+  bool init(std::string ip, int port, std::string prefix);
   void shutdown();
 
   void setRunning(bool b) { is_running_ = b; }
