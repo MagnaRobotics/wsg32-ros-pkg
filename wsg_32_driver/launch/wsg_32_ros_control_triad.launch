@@ -9,6 +9,10 @@
   <arg name="gripper_port_2" default="1000" />
   <arg name="gripper_port_3" default="1000" />
 
+  <arg name="gripper_urdf_1" default="triad_gripper_1_only.xacro" />
+  <arg name="gripper_urdf_2" default="triad_gripper_2_only.xacro" />
+  <arg name="gripper_urdf_3" default="triad_gripper_3_only.xacro" />
+
   <rosparam file="$(find wsg_32_driver)/config/wsg32_controllers_triad.yaml" command="load"/>
 
   <!-- ********************* -->
@@ -18,6 +22,7 @@
     <arg name="namespace" value="gripper_1"/>
     <arg name="gripper_ip" value="$(arg gripper_ip_1)"/>
     <arg name="gripper_port" value="$(arg gripper_port_1)"/>
+    <arg name="gripper_urdf" default="$(arg gripper_urdf_1)"/>
   </include>
 
   <!-- ********************* -->
@@ -27,6 +32,7 @@
     <arg name="namespace" value="gripper_2"/>
     <arg name="gripper_ip" value="$(arg gripper_ip_2)"/>
     <arg name="gripper_port" value="$(arg gripper_port_2)"/>
+    <arg name="gripper_urdf" default="$(arg gripper_urdf_2)"/>
   </include>
 
   <!-- ********************* -->
@@ -36,6 +42,7 @@
     <arg name="namespace" value="gripper_3"/>
     <arg name="gripper_ip" value="$(arg gripper_ip_3)"/>
     <arg name="gripper_port" value="$(arg gripper_port_3)"/>
+    <arg name="gripper_urdf" default="$(arg gripper_urdf_3)"/>
   </include>
 
 
