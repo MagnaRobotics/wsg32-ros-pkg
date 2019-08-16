@@ -1,18 +1,17 @@
 <?xml version="1.0"?>
 <launch>
 
-  <arg name="namespace" defualt="arm_1">
+  <arg name="namespace" defualt="gripper_1">
   <arg name="gripper_ip" default="192.168.1.1" />
   <arg name="gripper_port" default="1000" />
-  <arg name="gripper_urdf" default="triad_arm_1_only.xacro" />
-
 
   <group ns="$(arg namespace)_controller">
 
-    <param name="robot_description"  command="$(find xacro)/xacro --inorder $(find wsg_32_gripper_description)/robots/gripper_standalone.urdf" />
-
+    <!-- Currently we have sort of hard-coded the names of these joints. Should use urdf's -->
+    <!--<param name="robot_description"  command="$(find xacro)/xacro ******inorder $(find wsg_32_gripper_description)/robots/gripper_standalone.urdf" />-->
         
     <node name="gripper_ros_control"  pkg="wsg_32_driver" type="gripper_ros_control" output="screen">
+      <param name="gripper_prefix" type="string" value="$(arg namespace)"/>
       <param name="ip" type="string" value="$(arg gripper_ip)"/>
       <param name="port" type="int" value="$(arg gripper_port)"/>
       <remap to="/joint_states" from="/$(arg namespace)_controller/joint_states"/>
